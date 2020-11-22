@@ -12,18 +12,22 @@ session_start();
 $errors = array();
 // Get all values from register form
 $firstName = isset($_POST['firstName']) ? $_POST['firstName'] : null;
+// store firstName to session
+$_SESSION['firstName'] = $firstName;
+// todo: store all passing data from the form and store in the session 
+
 $lastName = isset($_POST['lastName']) ? $_POST['lastName'] : null;
 $username = isset($_POST['username']) ? $_POST['username']: null;
 $password = isset($_POST['password']) ? $_POST['password'] : null;
 $confirmPassword = isset($_POST['confirmPassword']) ? $_POST['confirmPassword'] : null;
-
 // Now I will validate fields by fields
-if (empty($firstName)) {array_push($errors, 'First name is required.');}
+// Make sure all variables are not empty!
+if (is_null($firstName) || empty($firstName)) {array_push($errors, 'First name is required.');}
 // todo: Continue to validate other empty fields: lastName, ....
 
-if (!is_null($username)) {
+if (!is_null($username) && !empty($username)) {
     $checkUserName = new CheckUserName($username);
-    if (!$checkUserName->check()) {
+    if ($checkUserName->doesExist()) {
         array_push($errors, "This userID already exists! Please choose another one.");
         $_SESSION['checkUserIDMessage'] = "This userID already exists! Please choose another one.";
     } else {
@@ -36,6 +40,8 @@ if ($password !== $confirmPassword) {array_push($errors, 'Password and Confirm p
 //characters, 1 lowercase character, 1 special character from {!, @, #, $, %, ^, &},
 //1 digit and a minimum length of 8 characters.
 // todo: validate if format of an password is correct here using the variable password
+
+
 
 if (count($errors) > 0) {
     $errorMessage = '';

@@ -13,9 +13,10 @@ class CheckUserName
         $this->username = $username;
     }
 
-    public function check()
+    public function doesExist()
     {
         // todo: read a file here and validate if $this->username is in the file
+
         return true;
     }
 }
