@@ -76,3 +76,6 @@ a {
 #checkId {
     margin-left: 5px;
 }
+.error {
+    color: red;
+}

@@ -9,7 +9,7 @@
     <link rel="stylesheet" type="text/css" href="register.css?v=1">
 </head>
 <body>
-    <form action="process.php">
+    <form method="post" action="process.php">
         <div class="container">
             <h1>Create your Google Account</h1>
             <input type="text" placeholder="First Name" id="firstName" name="firstName" required>
@@ -29,6 +29,7 @@
             <small>Use 8 or more characters with a mix of letters, numbers & symbols.</small>
             <br>
             <button type="submit" class="registerbtn">Next</button>
+            <?php include('errors.php'); ?>
         </div>
         <div class="container register">
             Already have an account? <a href="#">Sign in instead</a>
