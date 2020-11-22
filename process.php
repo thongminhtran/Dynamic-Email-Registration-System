@@ -24,7 +24,8 @@ if (empty($firstName)) {array_push($errors, 'First name is required.');}
 if (!is_null($username)) {
     $checkUserName = new CheckUserName($username);
     if (!$checkUserName->check()) {
-        array_push($errors, "This userID already exists!");
+        array_push($errors, "This userID already exists! Please choose another one.");
+        $_SESSION['checkUserIDMessage'] = "This userID already exists! Please choose another one.";
     } else {
         $_SESSION['checkUserIDMessage'] = "This userID is available";
     }
@@ -42,7 +43,7 @@ if (count($errors) > 0) {
         $errorMessage .= $errorMessage == '' ? $error : "<br>".$error;
     }
     $_SESSION['errors'] = $errorMessage;
-     header('Location: index.php');
 }
+header('Location: /');
 
 ?>

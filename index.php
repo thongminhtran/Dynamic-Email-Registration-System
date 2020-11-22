@@ -9,6 +9,9 @@
     <link rel="stylesheet" type="text/css" href="register.css?v=1">
 </head>
 <body>
+<?php
+session_start();
+?>
     <form method="post" action="process.php">
         <div class="container">
             <h1>Create your Google Account</h1>
@@ -21,6 +24,18 @@
                     <button type="button" id="checkId">Check ID</button>
                 </div>
             </div>
+            <?php
+            if (isset($_SESSION['checkUserIDMessage'])) {
+            ?>
+            <small class="error">
+                <?php
+                echo $_SESSION['checkUserIDMessage'];
+                ?>
+            </small>
+            <?php
+    unset($_SESSION['checkUserIDMessage']);
+}
+?>
             <small>You can use letters, numbers & periods.</small>
             <br>
             <input type="password" placeholder="Password" id="password" name="password" required>
