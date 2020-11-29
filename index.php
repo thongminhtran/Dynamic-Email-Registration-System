@@ -16,12 +16,13 @@
 <?php
 session_start();
 ?>
-<form method="post" action="process.php">
+<form method="post" action="process.php" id="registerForm">
     <div class="container">
         <h1>Create your Google Account</h1>
+
         <input type="text" placeholder="First Name" id="firstName" name="firstName"
                value="<?php echo isset($_SESSION['firstName']) ? $_SESSION['firstName'] : ''; ?>" required>
-        <!-- Insert session in the form so if I refresh the page, it will display similar to firstname-->
+
         <input type="text" placeholder="Last Name" id="lastName" name="lastName"
                value="<?php echo isset($_SESSION['lastName']) ? $_SESSION['lastName'] : ''; ?>" required>
 
@@ -30,6 +31,7 @@ session_start();
                    value="<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>" required>
             <div class="input-group-append">
                 <div class="input-group-text">@gmail.com</div>
+                <input type="hidden" id="checkIdValue" name="checkId" value="0">
                 <button type="button" id="checkId">Check ID</button>
             </div>
         </div>
@@ -48,8 +50,10 @@ session_start();
         ?>
         <small>You can use letters, numbers & periods.</small>
         <br>
+
         <input type="password" placeholder="Password" id="password" name="password"
                value="<?php echo isset($_SESSION['password']) ? $_SESSION['password'] : ''; ?>" required>
+
         <input type="password" placeholder="Confirm Password" id="confirmPassword" name="confirmPassword"
                value="<?php echo isset($_SESSION['confirmPassword']) ? $_SESSION['confirmPassword'] : ''; ?>" required>
         <br>
@@ -62,5 +66,15 @@ session_start();
         Already have an account? <a href="#">Sign in instead</a>
     </div>
 </form>
+<script>
+    var registerForm = document.getElementById('registerForm');
+    var checkIdInput = document.getElementById('checkIdValue');
+    var checkIdButton = document.getElementById('checkId');
+    checkIdButton.addEventListener("click", function() {
+       // CheckID button is clicked.
+        checkIdInput.setAttribute('value', '1');
+        registerForm.submit();
+    });
+</script>
 </body>
 </html>

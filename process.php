@@ -1,102 +1,132 @@
 <?php
 include_once('CheckUserName.php');
+include_once('register.php');
+include_once ('GetCountryCode.php');
+include_once ('Calendar.php');
 // ------------------------------------------------------------------------------
 // Assignment 3
 // Written by: Thong Minh Tran  -  ID: 40072745
 // For SOEN 287 Section Q – Fall 2020
 // -----------------------------------------------------------------------------
-
+/**
+ * Solving the logic when something hit process.php post button
+ */
 session_start();
-// Initialize errors
-$errors = array();
-// Get all values from register form
-$firstName = isset($_POST['firstName']) ? $_POST['firstName'] : null;
-// store firstName to session
-$_SESSION['firstName'] = $firstName;
-
-// Store all passing data from the form and store in the session
-
-$lastName = isset($_POST['lastName']) ? $_POST['lastName'] : null;
-$_SESSION['lastName'] = $lastName;
-$username = isset($_POST['username']) ? $_POST['username'] : null;
-$_SESSION['username'] = $username;
-$password = isset($_POST['password']) ? $_POST['password'] : null;
-$_SESSION['password'] = $password;
-$confirmPassword = isset($_POST['confirmPassword']) ? $_POST['confirmPassword'] : null;
-$_SESSION['confirmPassword'] = $confirmPassword;
-// Now I will validate fields by fields
-// Make sure all variables are not empty!
-if (is_null($firstName) || empty($firstName)) {
-    array_push($errors, 'First name is required.');
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    register();
 }
-// Validate other empty fields: lastName, ....
-if (is_null($username) || empty($username)) {
-    array_push($username, 'Username is required');
-}
-if (is_null($lastName) || empty($lastName)) {
-    array_push($errors, 'Last name is required');
-}
-if (is_null($password) || empty($password)) {
-    array_push($errors, 'Password is required');
-}
-if (is_null($confirmPassword) || empty($confirmPassword)) {
-    array_push($errors, 'Confirm Password is required');
-}
-
-if (!is_null($username) && !empty($username)) {
-    $checkUserName = new CheckUserName($username);
-    if ($checkUserName->doesExist()) {
-        array_push($errors, "This userID already exists! Please choose another one.");
-        $_SESSION['checkUserIDMessage'] = "This userID already exists! Please choose another one.";
-    } else {
-        $_SESSION['checkUserIDMessage'] = "This userID is available";
-    }
-}
-if ($password !== $confirmPassword) {
-    array_push($errors, 'Password and Confirm password do not match!');
-}
-
-//The password must contain at least two uppercase
-//characters, 1 lowercase character, 1 special character from {!, @, #, $, %, ^, &},
-//1 digit and a minimum length of 8 characters.
-// Validate if format of an password is correct here using the variable password
-$passwordValidateMessage = isValidPassword($password);
-if (!is_null($passwordValidateMessage)) {
-    array_push($errors, $passwordValidateMessage);
-}
-if (count($errors) > 0) {
-    $errorMessage = '';
-    foreach ($errors as $error) {
-        $errorMessage .= $errorMessage == '' ? $error : "<br>" . $error;
-    }
-    $_SESSION['errors'] = $errorMessage;
-}
-header('Location: /');
-function isValidPassword($password)
-{
-    $minimum_length = 8;
-    // Check if password has at least 8 characters
-    if (strlen($password) < $minimum_length) {
-        return 'Password must have at least ' . $minimum_length . ' characters!';
-    }
-    // Check if password has at least one digit character
-    if (!preg_match("#[0-9]+#", $password)) {
-        return 'Password must have at least one digit';
-    }
-    // Check if password has at least one special character from {!, @, #, $, %, ^, &}
-    if (!preg_match("/[!@#$%^&]/", $password)) {
-        return 'Password must have one special character from {!, @, #, $, %, ^, &}';
-    }
-
-    // Check if password has at least one lowercase character
-    if (!preg_match("#[a-z]+#", $password)) {
-        return 'Password must have at least one lowercase character.';
-    }
-    // Check if password has at least two uppercase character
-    if (!preg_match("/^(?=(?:.*?[A-Z]){2})/", $password)) {
-        return 'Password must have at least two uppercase character';
-    }
-    return null;
-}
-
 ?>
+<!DOCTYPE html>
+
+<!---------------------------------------------------------------------------------->
+<!-- Assignment 3-->
+<!-- Written by: Thong Minh Tran  -  ID: 40072745-->
+<!-- For SOEN 287 Section Q – Fall 2020-->
+<!--------------------------------------------------------------------------------->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create your Google Account</title>
+    <link rel="stylesheet" type="text/css" href="register.css?v=1">
+</head>
+<body>
+
+<form method="post" action="outcome.php" id="registerForm">
+    <div class="container">
+        <h4><?php echo isset($_SESSION['firstName']) ? $_SESSION['firstName'] : ''; ?>
+            <?php echo isset($_SESSION['lastName']) ? $_SESSION['lastName'] : ''; ?>, Welcome to Google.
+            <br><small><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>@gmail.com</small>
+        </h4>
+        <br>
+        <small class="width-100">
+            Your Phone Number
+        </small>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <?php
+                    $getCountryCode = new GetCountryCode();
+                ?>
+                <select name="countryCode" style="margin:auto;" required>
+                    <option value="null">Please select country code</option>
+                    <?php
+                        foreach($getCountryCode->countryCodes as $countryCode) {
+                    ?>
+                        <option value="<?php echo $countryCode; ?>"><?php echo $countryCode ?></option>
+                    <?php
+                        }
+                    ?>
+                </select>
+            </div>
+            <input type="text" placeholder="Phone number" name="phoneNumber" required>
+            <br>
+            <small class="notice">We'll use your number for account security. It won't be visible to others.</small>
+        </div>
+        <div class="input-group">
+            <input type="email" class="width-100" placeholder="Recovery email address" name="recoveryEmailAddress" required>
+            <br>
+            <small class="notice">We'll use it to keep your account secure.</small>
+        </div>
+        <br>
+        <small class="width-100">
+            Your birthday
+        </small>
+        <?php
+        $calendar = new Calendar();
+        ?>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <select name="birthdayMonth" required>
+                    <option value="null">Please select your birthday month</option>
+                    <?php
+                    foreach($calendar->months as $month) {
+                        ?>
+                        <option value="<?php echo $month; ?>"><?php echo $month ?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+            <select name="birthdayDay" required>
+                <option value="null">Please select your birthday day</option>
+                <?php
+                foreach($calendar->days as $day) {
+                    ?>
+                    <option value="<?php echo $day; ?>"><?php echo $day ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            <select name="birthdayYear" required>
+                <option value="null">Please select your birthday year</option>
+                <?php
+                foreach($calendar->years as $year) {
+                    ?>
+                    <option value="<?php echo $year; ?>"><?php echo $year ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+        </div>
+        <br>
+        <small class="width-100">
+            Your Gender
+        </small>
+        <select name="gender" required>
+           <option value="rather_not_say">Rather not to say</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+        </select>
+        <button type="submit" class="registerbtn">Submit</button>
+        <button type="button" id="backButton" class="button">Go back</button>
+        <?php include('errors.php'); ?>
+    </div>
+</form>
+<script>
+    var backButton = document.getElementById('backButton');
+    backButton.addEventListener("click", function() {
+        window.history.back();
+    });
+</script>
+</body>
+</html>
