@@ -1,12 +1,13 @@
 <?php
-include_once('CheckUserName.php');
 include_once('register.php');
 include_once ('GetCountryCode.php');
 include_once ('Calendar.php');
+include_once ('common-functions.php');
 // ------------------------------------------------------------------------------
 // Assignment 3
 // Written by: Thong Minh Tran  -  ID: 40072745
 // For SOEN 287 Section Q – Fall 2020
+// This solve the register logic (mostly validation and show additional form data
 // -----------------------------------------------------------------------------
 /**
  * Solving the logic when something hit process.php post button
@@ -15,6 +16,7 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     register();
 }
+$user = getSessionUser();
 ?>
 <!DOCTYPE html>
 
@@ -28,15 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Create your Google Account</title>
-    <link rel="stylesheet" type="text/css" href="register.css?v=1">
+    <link rel="stylesheet" type="text/css" href="style.css?v=1">
 </head>
 <body>
 
 <form method="post" action="outcome.php" id="registerForm">
     <div class="container">
-        <h4><?php echo isset($_SESSION['firstName']) ? $_SESSION['firstName'] : ''; ?>
-            <?php echo isset($_SESSION['lastName']) ? $_SESSION['lastName'] : ''; ?>, Welcome to Google.
-            <br><small><?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>@gmail.com</small>
+        <h4><?php echo !is_null($user->firstName) ? $user->firstName: ''; ?>
+            <?php echo !is_null($user->lastName) ? $user->lastName: ''; ?>, Welcome to Google.
+            <br><small><?php echo !is_null($user->username) ? $user->username: '' ?>@gmail.com</small>
         </h4>
         <br>
         <small class="width-100">
@@ -119,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </select>
         <button type="submit" class="registerbtn">Submit</button>
         <button type="button" id="backButton" class="button">Go back</button>
-        <?php include('errors.php'); ?>
     </div>
 </form>
 <script>

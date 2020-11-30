@@ -1,5 +1,8 @@
 <?php
 /**
+// Assignment 3
+// Written by: Thong Minh Tran  -  ID: 40072745
+// For SOEN 287 Section Q – Fall 2020
  * Read file from file name and return a string
  */
 function readFileToArray($fileName)
@@ -14,4 +17,9 @@ function readFileToArray($fileName)
        $parseLine[] = fgets($file);
     }
     return $parseLine;
+}
+function writeToFile($fileName, $line)
+{
+    file_put_contents($fileName, "\n", FILE_APPEND);
+    file_put_contents($fileName, $line, FILE_APPEND);
 }

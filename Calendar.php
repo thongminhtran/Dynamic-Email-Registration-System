@@ -1,4 +1,14 @@
 <?php
+
+/**
+<!-- Assignment 3-->
+<!-- Written by: Thong Minh Tran  -  ID: 40072745-->
+<!-- For SOEN 287 Section Q – Fall 2020-->
+<!--------------------------------------------------------------------------------->
+ * This class is to store data we want to display at select dropdown for day of birth, year of birth, month of birth
+ * Class Calendar
+ *
+ */
 class Calendar
 {
     public $months;
